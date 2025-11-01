@@ -218,7 +218,7 @@ This project is open source and available under the MIT License.
 
 ## Author
 
-Vaddi Hemanth Sridharma Teja
+Vaddi Hemanth Sri Dharma Teja
 
 ## Support
 
