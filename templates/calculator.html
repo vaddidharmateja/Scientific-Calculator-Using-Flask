@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="Advanced scientific calculator with trigonometric functions, logarithms, and memory operations">
+    <meta name="theme-color" content="#667eea">
+    <title>Scientific Calculator Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <div class="calculator-container">
+        <div class="header">
+            <h1>SCIENTIFIC CALCULATOR</h1>
+            <button class="help-btn" onclick="showHelp()">Help</button>
+        </div>
+
+        <div class="display-container">
+            <div class="mode-indicator">Mode: <span id="angle-mode">DEG</span></div>
+            <div class="display" id="display" role="textbox" aria-label="Calculator display" aria-live="polite">0</div>
+        </div>
+
+        <div class="button-grid">
+            <!-- Row 0 - Memory functions -->
+            <button class="btn memory" onclick="memoryAction('clear')" aria-label="Memory Clear">MC</button>
+            <button class="btn memory" onclick="memoryAction('recall')" aria-label="Memory Recall">MR</button>
+            <button class="btn memory" onclick="memoryAction('add')" aria-label="Memory Add">M+</button>
+            <button class="btn memory" onclick="memoryAction('subtract')" aria-label="Memory Subtract">M-</button>
+            <button class="btn memory" onclick="memoryAction('store')" aria-label="Memory Store">MS</button>
+            <button class="btn function" onclick="toggleAngleMode()" aria-label="Toggle Angle Mode">DEG/RAD</button>
+
+            <!-- Row 1 - Trigonometric functions -->
+            <button class="btn function" onclick="trigFunction('sin')" aria-label="Sine">sin</button>
+            <button class="btn function" onclick="trigFunction('cos')" aria-label="Cosine">cos</button>
+            <button class="btn function" onclick="trigFunction('tan')" aria-label="Tangent">tan</button>
+            <button class="btn function" onclick="mathFunction('log')" aria-label="Logarithm base 10">log</button>
+            <button class="btn function" onclick="mathFunction('ln')" aria-label="Natural logarithm">ln</button>
+            <button class="btn function" onclick="mathFunction('sqrt')" aria-label="Square root">√</button>
+
+            <!-- Row 2 - Inverse trig and power functions -->
+            <button class="btn function" onclick="trigFunction('asin')" aria-label="Arc sine">asin</button>
+            <button class="btn function" onclick="trigFunction('acos')" aria-label="Arc cosine">acos</button>
+            <button class="btn function" onclick="trigFunction('atan')" aria-label="Arc tangent">atan</button>
+            <button class="btn function" onclick="squareFunction()" aria-label="Square">x²</button>
+            <button class="btn operator" onclick="insertOperator('^')" aria-label="Power">xʸ</button>
+            <button class="btn function" onclick="mathFunction('reciprocal')" aria-label="Reciprocal">1/x</button>
+
+            <!-- Row 3 - Constants and brackets -->
+            <button class="btn function" onclick="insertConstant('pi')" aria-label="Pi constant">π</button>
+            <button class="btn function" onclick="insertConstant('e')" aria-label="Euler's number">e</button>
+            <button class="btn operator" onclick="insertText('(')" aria-label="Open parenthesis">(</button>
+            <button class="btn operator" onclick="insertText(')')" aria-label="Close parenthesis">)</button>
+            <button class="btn special" onclick="clearDisplay()" aria-label="Clear">C</button>
+            <button class="btn special" onclick="backspace()" aria-label="Backspace">⌫</button>
+
+            <!-- Row 4 - Numbers and operations -->
+            <button class="btn number" onclick="insertText('7')" aria-label="Seven">7</button>
+            <button class="btn number" onclick="insertText('8')" aria-label="Eight">8</button>
+            <button class="btn number" onclick="insertText('9')" aria-label="Nine">9</button>
+            <button class="btn operator" onclick="insertOperator('/')" aria-label="Divide">÷</button>
+            <button class="btn function" onclick="mathFunction('factorial')" aria-label="Factorial">n!</button>
+            <button class="btn function" onclick="mathFunction('abs')" aria-label="Absolute value">|x|</button>
+
+            <!-- Row 5 -->
+            <button class="btn number" onclick="insertText('4')" aria-label="Four">4</button>
+            <button class="btn number" onclick="insertText('5')" aria-label="Five">5</button>
+            <button class="btn number" onclick="insertText('6')" aria-label="Six">6</button>
+            <button class="btn operator" onclick="insertOperator('*')" aria-label="Multiply">×</button>
+            <button class="btn operator" onclick="insertOperator('%')" aria-label="Percent">%</button>
+            <button class="btn function" onclick="negate()" aria-label="Plus minus">±</button>
+
+            <!-- Row 6 -->
+            <button class="btn number" onclick="insertText('1')" aria-label="One">1</button>
+            <button class="btn number" onclick="insertText('2')" aria-label="Two">2</button>
+            <button class="btn number" onclick="insertText('3')" aria-label="Three">3</button>
+            <button class="btn operator" onclick="insertOperator('-')" aria-label="Subtract">-</button>
+            <button class="btn function" onclick="mathFunction('exp')" aria-label="Exponential">EXP</button>
+            <button class="btn function" onclick="mathFunction('10power')" aria-label="10 to the power of x">10ˣ</button>
+
+            <!-- Row 7 -->
+            <button class="btn number" onclick="insertText('0')" aria-label="Zero">0</button>
+            <button class="btn number" onclick="insertText('.')" aria-label="Decimal point">.</button>
+            <button class="btn equals" onclick="calculate()" aria-label="Equals">=</button>
+            <button class="btn operator" onclick="insertOperator('+')" aria-label="Add">+</button>
+            <button class="btn function" onclick="insertAnswer()" aria-label="Last answer">Ans</button>
+            <button class="btn function" onclick="showHistory()" aria-label="Show history">History</button>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="history-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('history-modal')">&times;</span>
+            <h2>CALCULATION HISTORY</h2>
+            <div id="history-content" class="history-content"></div>
+            <button class="btn special" onclick="clearHistory()">Clear History</button>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal">
+        <div class="modal-content help-content">
+            <span class="close" onclick="closeModal('help-modal')">&times;</span>
+            <h2>SCIENTIFIC CALCULATOR HELP</h2>
+            <div class="help-section">
+                <h3>Basic Operations</h3>
+                <ul>
+                    <li><strong>Numbers (0-9)</strong>: Enter digits</li>
+                    <li><strong>Decimal (.)</strong>: Add decimal point</li>
+                    <li><strong>Operators (+, -, ×, ÷)</strong>: Basic arithmetic</li>
+                    <li><strong>Equals (=)</strong>: Calculate result</li>
+                    <li><strong>Clear (C)</strong>: Reset calculator</li>
+                    <li><strong>Backspace (⌫)</strong>: Delete last character</li>
+                </ul>
+
+                <h3>Scientific Functions</h3>
+                <ul>
+                    <li><strong>sin, cos, tan</strong>: Trigonometric functions</li>
+                    <li><strong>asin, acos, atan</strong>: Inverse trigonometric functions</li>
+                    <li><strong>log</strong>: Base-10 logarithm</li>
+                    <li><strong>ln</strong>: Natural logarithm</li>
+                    <li><strong>√</strong>: Square root</li>
+                    <li><strong>x²</strong>: Square</li>
+                    <li><strong>xʸ</strong>: Power (use ^ operator)</li>
+                    <li><strong>exp</strong>: Exponential function</li>
+                    <li><strong>10ˣ</strong>: 10 to the power of x</li>
+                    <li><strong>n!</strong>: Factorial</li>
+                    <li><strong>|x|</strong>: Absolute value</li>
+                    <li><strong>1/x</strong>: Reciprocal</li>
+                    <li><strong>±</strong>: Change sign</li>
+                </ul>
+
+                <h3>Memory Functions</h3>
+                <ul>
+                    <li><strong>MC</strong>: Memory clear</li>
+                    <li><strong>MR</strong>: Memory recall</li>
+                    <li><strong>M+</strong>: Add to memory</li>
+                    <li><strong>M-</strong>: Subtract from memory</li>
+                    <li><strong>MS</strong>: Memory store</li>
+                    <li><strong>Ans</strong>: Recall last answer</li>
+                </ul>
+
+                <h3>Other Features</h3>
+                <ul>
+                    <li><strong>DEG/RAD</strong>: Toggle between degrees and radians</li>
+                    <li><strong>π, e</strong>: Insert constants</li>
+                    <li><strong>History</strong>: View calculation history</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentExpression = '';
+        let lastAnswer = '';
+
+        // Helper function to send requests to the server
+        async function sendRequest(action, value = null) {
+            const data = { action, value };
+
+            if (action === 'calculate') {
+                data.expression = currentExpression;
+                currentExpression = '';
+            }
+
+            try {
+                const response = await fetch('/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (action === 'get_history') {
+                    return result.history;
+                }
+
+                document.getElementById('display').textContent = result.display;
+
+                if (result.angle_mode) {
+                    document.getElementById('angle-mode').textContent = result.angle_mode;
+                }
+
+                // Update last answer if we have a valid result
+                if (action === 'calculate' && result.display !== 'Error') {
+                    lastAnswer = result.display;
+                }
+
+                return result;
+            } catch (error) {
+                console.error('Error:', error);
+                return { display: 'Error' };
+            }
+        }
+
+        // Calculator functions
+        function insertText(text) {
+            if (document.getElementById('display').textContent === '0' && text !== '.') {
+                currentExpression = text;
+            } else {
+                currentExpression += text;
+            }
+            document.getElementById('display').textContent = currentExpression;
+        }
+
+        function insertOperator(op) {
+            const operatorMap = {
+                '*': '×',
+                '/': '÷',
+                '^': '^'
+            };
+            const displayOp = operatorMap[op] || op;
+            currentExpression += displayOp;
+            document.getElementById('display').textContent = currentExpression;
+        }
+
+        function clearDisplay() {
+            currentExpression = '';
+            document.getElementById('display').textContent = '0';
+        }
+
+        function backspace() {
+            if (currentExpression.length > 0) {
+                currentExpression = currentExpression.slice(0, -1);
+                document.getElementById('display').textContent = currentExpression || '0';
+            }
+        }
+
+        function negate() {
+            if (currentExpression === '' || currentExpression === '0') {
+                currentExpression = '-';
+            } else if (currentExpression.startsWith('-')) {
+                currentExpression = currentExpression.substring(1);
+            } else {
+                currentExpression = '-' + currentExpression;
+            }
+            document.getElementById('display').textContent = currentExpression;
+        }
+
+        function squareFunction() {
+            currentExpression += '^2';
+            document.getElementById('display').textContent = currentExpression;
+        }
+
+        function calculate() {
+            if (currentExpression === '') return;
+            
+            fetch('/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'calculate',
+                    expression: currentExpression
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.display && result.display !== 'Error') {
+                    lastAnswer = result.display;
+                    currentExpression = result.display;
+                } else {
+                    currentExpression = 'Error';
+                }
+                document.getElementById('display').textContent = currentExpression;
+                
+                if (result.angle_mode) {
+                    document.getElementById('angle-mode').textContent = result.angle_mode;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                currentExpression = 'Error';
+                document.getElementById('display').textContent = currentExpression;
+            });
+        }
+
+        function mathFunction(func) {
+            if (func === 'reciprocal') {
+                // Replace current value with 1/current_value
+                if (currentExpression && currentExpression !== '0') {
+                    try {
+                        const currentValue = parseFloat(currentExpression);
+                        if (!isNaN(currentValue) && currentValue !== 0) {
+                            currentExpression = (1 / currentValue).toString();
+                        } else {
+                            currentExpression = 'Error';
+                        }
+                    } catch {
+                        currentExpression = 'Error';
+                    }
+                } else {
+                    currentExpression = 'Error';
+                }
+            } else {
+                const functionMap = {
+                    'sqrt': '√(',
+                    'log': 'log(',
+                    'ln': 'ln(',
+                    'exp': 'exp(',
+                    '10power': '10^(',
+                    'factorial': '!',
+                    'abs': 'abs('
+                };
+                
+                if (func === 'factorial') {
+                    currentExpression += '!';
+                } else {
+                    const displayText = functionMap[func] || func + '(';
+                    currentExpression += displayText;
+                }
+            }
+            document.getElementById('display').textContent = currentExpression;
+        }
+
+        function trigFunction(func) {
+            const displayText = func + '(';
+            currentExpression += displayText;
+            document.getElementById('display').textContent = currentExpression;
+        }
+
+        function insertConstant(constant) {
+            const constantMap = {
+                'pi': '3.141592653589793',
+                'e': '2.718281828459045'
+            };
+            const displayText = constantMap[constant] || constant;
+            
+            if (document.getElementById('display').textContent === '0') {
+                currentExpression = displayText;
+            } else {
+                currentExpression += displayText;
+            }
+            document.getElementById('display').textContent = currentExpression;
+        }
+
+        function toggleAngleMode() {
+            fetch('/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'toggle_angle'
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.angle_mode) {
+                    document.getElementById('angle-mode').textContent = result.angle_mode;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function memoryAction(action) {
+            fetch('/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'memory_' + action,
+                    value: currentExpression
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (action === 'recall' && result.display) {
+                    currentExpression = result.display;
+                    document.getElementById('display').textContent = currentExpression;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function insertAnswer() {
+            if (lastAnswer) {
+                currentExpression += lastAnswer;
+                document.getElementById('display').textContent = currentExpression;
+            }
+        }
+
+        // History functions
+        async function showHistory() {
+            const history = await sendRequest('get_history');
+            const historyContent = document.getElementById('history-content');
+
+            if (history && history.length > 0) {
+                historyContent.innerHTML = history.map(item =>
+                    `<div class="history-item">${item}</div>`
+                ).join('');
+            } else {
+                historyContent.innerHTML = '<div class="history-item">No calculations in history</div>';
+            }
+
+            document.getElementById('history-modal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function clearHistory() {
+            sendRequest('clear_history');
+            document.getElementById('history-content').innerHTML = '<div class="history-item">No calculations in history</div>';
+        }
+
+        // Help functions
+        function showHelp() {
+            document.getElementById('help-modal').style.display = 'block';
+        }
+
+        // Keyboard support
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            
+            // Prevent default for calculator keys
+            if ('0123456789+-*/.=()'.includes(key) || key === 'Enter' || key === 'Backspace' || key === 'Escape') {
+                event.preventDefault();
+            }
+            
+            // Number keys
+            if ('0123456789'.includes(key)) {
+                insertText(key);
+            }
+            // Operator keys
+            else if (key === '+') insertOperator('+');
+            else if (key === '-') insertOperator('-');
+            else if (key === '*') insertOperator('*');
+            else if (key === '/') insertOperator('/');
+            else if (key === '%') insertOperator('%');
+            else if (key === '^') insertOperator('^');
+            // Special keys
+            else if (key === '.') insertText('.');
+            else if (key === '(') insertText('(');
+            else if (key === ')') insertText(')');
+            else if (key === 'Enter' || key === '=') calculate();
+            else if (key === 'Backspace') backspace();
+            else if (key === 'Escape' || key === 'c' || key === 'C') clearDisplay();
+        });
+        
+        // Add visual feedback for button presses
+        function addButtonFeedback(buttonElement) {
+            buttonElement.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                buttonElement.style.transform = '';
+            }, 100);
+        }
+        
+        // Add click feedback to all buttons
+        document.addEventListener('DOMContentLoaded', function () {
+            // Clear any residual client-side data
+            localStorage.removeItem('calculatorState');
+            sessionStorage.removeItem('calculatorState');
+
+            // Reset the display
+            document.getElementById('display').textContent = '0';
+            currentExpression = '';
+            lastAnswer = '';
+            
+            // Add click feedback to all buttons
+            document.querySelectorAll('.btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    addButtonFeedback(this);
+                });
+            });
+            
+            // Add ripple effect
+            document.querySelectorAll('.btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.cssText = `
+                        position: absolute;
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                        background: rgba(255, 255, 255, 0.3);
+                        border-radius: 50%;
+                        transform: scale(0);
+                        animation: ripple 0.6s linear;
+                        pointer-events: none;
+                    `;
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        });
+        
+        // Add CSS for ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        window.addEventListener('beforeunload', function () {
+            // Additional cleanup if needed
+        });
+        
+    </script>
+</body>
+
+</html>
