@@ -123,22 +123,19 @@ scientific_calculator/
 ### Main Calculator Interface
 <!-- Add your calculator interface screenshot here -->
 ![Calculator Interface](static/images/calculator_interface.png)
-*Location: Place calculator interface image in `static/images/` folder*
 
 ### Scientific Functions Panel
 <!-- Add scientific functions screenshot here -->
 ![Scientific Functions](static/images/scientific_functions.png)
-*Location: Place scientific functions image in `static/images/` folder*
 
 ### Calculation History
 <!-- Add calculation history screenshot here -->
 ![Calculation History](static/images/calculation_history.png)
-*Location: Place history image in `static/images/` folder*
+
 
 ### Calculation Help
 <!-- Add Calculation Help screenshot here -->
 ![Calculation Help](static/images/calculation_help.png)
-*Location: Place Calculation Help image in `static/images/` folder*
 
 ## API Endpoints
 
